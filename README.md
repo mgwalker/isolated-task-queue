@@ -19,7 +19,7 @@ var myQueue = new TaskQueue("./taskRunner.js");
 
 The constructor also accepts a second `options` argument, specifying the queue process idle timeout and maximum number of tasks before starting a new process.  The `options` argument looks like this:
 
-```json
+```javascript
 {
    idleTime: 10000,
    taskLimit: 0
