@@ -1,3 +1,4 @@
+[![npm version](https://badge.fury.io/js/isolated-task-queue.svg)](http://badge.fury.io/js/isolated-task-queue) [![Dependency Status](https://david-dm.org/mgwalker/isolated-task-queue.svg)](https://david-dm.org/mgwalker/isolated-task-queue)
 # isolated-task-queue
 
 A simple node module to execute tasks on an isolated process by forking it.  "Isolated" here means from the rest of your process; by default, all tasks dispatched to the queue will be executed on the same forked process, so they are not isolated from each other.  However, there is an idle timeout as well as an optional maximum task limit to provide isolation between tasks if desired.
