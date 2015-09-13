@@ -2,15 +2,21 @@
   "name": "isolated-task-queue",
   "version": "1.0.0",
   "description": "Execute tasks in an isolated process, with idle timeouts and optional process ('overheat') limit.",
-  "keywords": [ "isolated", "queue", "process" ],
+  "keywords": [
+    "isolated",
+    "queue",
+    "process"
+  ],
   "bugs": {
     "url": "https://github.com/mgwalker/isolated-task-queue/issues",
     "email": "isolated-task-queue@darkcooger.net"
   },
   "main": "main.js",
-  "files": [ "main.js" ],
+  "files": [
+    "main.js"
+  ],
   "scripts": {
-    "prebuild": "eslint main.es6 --env node,es6",
+    "prebuild": "cooger-style main.es6",
     "build": "babel main.es6 -o main.js --no-comments --compact",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -21,7 +27,7 @@
   },
   "devDependencies": {
     "babel": "^5.6.23",
-    "eslint": "^0.24.1"
+    "cooger-style": "^1.0.2"
   },
   "repository": {
     "type": "git",
