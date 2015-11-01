@@ -23,7 +23,8 @@
   "author": "Greg Walker <isolated-task-queue@darkcooger.net>",
   "license": "MIT",
   "dependencies": {
-    "promise": "^7.0.3"
+    "babel": "^5.8.29",
+    "promise": "^7.0.4"
   },
   "devDependencies": {
     "babel": "^5.6.23",
