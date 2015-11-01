@@ -1,6 +1,6 @@
 {
   "name": "isolated-task-queue",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Execute tasks in an isolated process, with idle timeouts and optional process ('overheat') limit.",
   "keywords": [
     "isolated",
