@@ -17,11 +17,13 @@
   ],
   "scripts": {
     "prebuild": "cooger-style main.es6",
-    "build": "babel main.es6 -o main.js --no-comments --compact",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "babel main.es6 -o main.js --no-comments",
+    "test": "istanbul cover tap -- -R spec test/main.js"
   },
   "babel": {
-    "presets": [ "es2015" ]
+    "presets": [
+      "es2015"
+    ]
   },
   "author": "Greg Walker <isolated-task-queue@darkcooger.net>",
   "license": "MIT",
@@ -30,8 +32,11 @@
   },
   "devDependencies": {
     "babel-cli": "^6.4.5",
+    "babel-istanbul": "^0.6.0",
     "babel-preset-es2015": "^6.3.13",
-    "cooger-style": "^1.0.2"
+    "codeclimate-test-reporter": "^0.3.0",
+    "cooger-style": "^1.0.2",
+    "tap": "^5.1.1"
   },
   "repository": {
     "type": "git",
