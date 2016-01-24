@@ -12,7 +12,7 @@ module.exports = function Constructor(proc) {
 		options.idleTime = 3000;
 	}
 	if (Number.isNaN(options.taskLimit)) {
-		options.taskLimit = 0;
+		options.taskLimit = Infinity;
 	}
 
 	var queue = [];
@@ -32,11 +32,11 @@ module.exports = function Constructor(proc) {
 				var task = queue.shift();
 
 				callback = task.callback;
+				taskCount++;
+				running = true;
 				getTaskProcessor().then(function (p) {
 					return p.send(task.body);
 				});
-				taskCount++;
-				running = true;
 			})();
 		}
 	}
@@ -48,7 +48,7 @@ module.exports = function Constructor(proc) {
 		taskProcess.on("message", function (msg) {
 			clearTimeout(processorTimeout);
 			processorTimeout = setTimeout(function () {
-				taskProcess.kill();
+				taskProcess.kill("SIGTERM");
 			}, options.idleTime);
 
 			callback(msg && !msg.error, msg);
@@ -71,7 +71,7 @@ module.exports = function Constructor(proc) {
 					initNewProcessor();
 					resolve(taskProcess);
 				});
-				taskProcess.kill();
+				taskProcess.kill("SIGTERM");
 			} else {
 				resolve(taskProcess);
 			}
