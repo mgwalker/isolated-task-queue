@@ -87,24 +87,21 @@ var taskLimits = [
 
 categories.forEach(function(category) {
 	tap.test(category.name, function(categoryTest) {
-		categoryTest.test("With promises", function(promiseTest) {
-			idleTimes.forEach(function(idleTime) {
-				promiseTest.test(idleTime.name, function(idleTimeTest) {
-					taskLimits.forEach(function(taskLimit) {
-						idleTimeTest.test(taskLimit.name, function(taskLimitTest) {
-							var obj = JSON.parse(JSON.stringify({
-								idleTime: idleTime.value,
-								taskLimit: taskLimit.value
-							}));
-							shouldFullfillPromiseAndCallback(category.value, obj, "data", taskLimitTest);
-							//taskLimitTest.end();
-						});
-					})
-					idleTimeTest.end();
+		idleTimes.forEach(function(idleTime) {
+			categoryTest.test(idleTime.name, function(idleTimeTest) {
+				taskLimits.forEach(function(taskLimit) {
+					idleTimeTest.test(taskLimit.name, function(taskLimitTest) {
+						var obj = JSON.parse(JSON.stringify({
+							idleTime: idleTime.value,
+							taskLimit: taskLimit.value
+						}));
+						shouldFullfillPromiseAndCallback(category.value, obj, "data", taskLimitTest);
+						//taskLimitTest.end();
+					});
 				})
-			});
-			promiseTest.end();
+				idleTimeTest.end();
+			})
 		});
 		categoryTest.end();
-	})
+	});
 })
