@@ -17,14 +17,24 @@ function kickOffProcesses(queue, data, callback) {
 	return allPromises;
 }
 
-function shouldFullfillPromise(shouldResolve, options, data, test) {
+function shouldFullfillPromiseAndCallback(expectSuccess, options, data, test) {
 	var promisesDone = 0;
-	var allResolved = true;
-	var allRejected = true;
-	var noProcessesExceedTaskLimit = true;
+	var allResolved = true, allRejected = true;
+	var callbacks = 0;
+	var allSucceeded = true, allFailed = true;
 	var maxTasks = 0, taskLimit = Infinity;
+
 	if(options && !Number.isNaN(Number(options.taskLimit))) {
 		taskLimit = Number(options.taskLimit);
+	}
+
+	var checkDone = function() {
+		if(promisesDone == promises.length && callbacks == NUMBER_OF_PROCESSES) {
+			test.equal(true, (expectSuccess ? allResolved : allRejected), "All promises should " + (expectSuccess ? "resolve" : "reject"));
+			test.equal(true, (expectSuccess ? allSucceeded : allFailed), (expectSuccess ? "No" : "All") + " callbacks return an error");
+			test.equal(true, (maxTasks <= taskLimit), "No process exceeded its task limit (" + maxTasks + " <= " + taskLimit + ")");
+			test.end();
+		}
 	}
 
 	var promiseFinished = function(output) {
@@ -32,16 +42,22 @@ function shouldFullfillPromise(shouldResolve, options, data, test) {
 		if(output.messages > maxTasks) {
 			maxTasks = output.messages;
 		}
-
-		if(promisesDone == promises.length) {
-			test.equal(true, (shouldResolve ? allResolved : allRejected), "All promises should " + (shouldResolve ? "resolve" : "reject"));
-			test.equal(true, (maxTasks <= taskLimit), "No process exceeded its task limit (" + maxTasks + " <= " + taskLimit + ")");
-			test.end();
-		}
+		checkDone();
 	}
 
-	var queue = new TaskQueue("./test/processes/" + (shouldResolve ? "pass" : "fail") + ".js", options);
-	var promises = kickOffProcesses(queue, data);
+	var callback = function(success, data) {
+		callbacks++;
+		allSucceeded = allSucceeded && success;
+		allFailed = allFailed && !success;
+		if(data.messages > maxTasks) {
+			maxTasks = data.messages;
+		}
+
+		checkDone();
+	};
+
+	var queue = new TaskQueue("./test/processes/" + (expectSuccess ? "pass" : "fail") + ".js", options);
+	var promises = kickOffProcesses(queue, data, callback);
 
 	promises.forEach(function(promise) {
 		promise.then(function(output) {
@@ -54,238 +70,41 @@ function shouldFullfillPromise(shouldResolve, options, data, test) {
 	});
 }
 
-function shouldCallback(expectSuccess, options, data, test) {
-	var callbacks = 0;
-	var allSucceeded = true, allFailed = true;
-	var maxTasks = 0, taskLimit = Infinity;
-	if(options && !Number.isNaN(Number(options.taskLimit))) {
-		taskLimit = Number(options.taskLimit);
-	}
+var categories = [
+	{ name: "With failing process", value: false },
+	{ name: "With succeeding process", value: true }
+];
+var idleTimes = [
+	{ name: "With no idle time ", value: undefined },
+	{ name: "With non-numeric idle time", value: "NaN" },
+	{ name: "With numeric idle time", value: 50 }
+];
+var taskLimits = [
+	{ name: "With no task limit ", value: undefined },
+	{ name: "With non-numeric task limit", value: "NaN" },
+	{ name: "With numeric task limit", value: 3 }
+];
 
-	var callback = function(success, data) {
-		callbacks++;
-		allSucceeded = allSucceeded && success;
-		allFailed = allFailed && !success;
-		if(data.messages > maxTasks) {
-			maxTasks = data.messages;
-		}
-
-		if(callbacks == NUMBER_OF_PROCESSES) {
-			test.equal(true, (expectSuccess ? allSucceeded : allFailed), (expectSuccess ? "No" : "All") + " callbacks return an error");
-			test.equal(true, (maxTasks <= taskLimit), "No process exceeded its task limit (" + maxTasks + " <= " + taskLimit + ")");
-			test.end();
-		}
-	};
-
-	var queue = new TaskQueue("./test/processes/" + (expectSuccess ? "pass" : "fail") + ".js", options);
-	kickOffProcesses(queue, data, callback);
-}
-
-
-tap.test("With failing process (promises)", function(highLevel) {
-	highLevel.test("With undefined options", function(optionsTest) {
-		shouldFullfillPromise(false, undefined, "test", optionsTest);
-	});
-
-	highLevel.test("With no idle time", function(idleTime) {
-		idleTime.test("With no task limit", function(taskLimit) {
-			shouldFullfillPromise(false, { }, "test", taskLimit);
+categories.forEach(function(category) {
+	tap.test(category.name, function(categoryTest) {
+		categoryTest.test("With promises", function(promiseTest) {
+			idleTimes.forEach(function(idleTime) {
+				promiseTest.test(idleTime.name, function(idleTimeTest) {
+					taskLimits.forEach(function(taskLimit) {
+						idleTimeTest.test(taskLimit.name, function(taskLimitTest) {
+							var obj = JSON.parse(JSON.stringify({
+								idleTime: idleTime.value,
+								taskLimit: taskLimit.value
+							}));
+							shouldFullfillPromiseAndCallback(category.value, obj, "data", taskLimitTest);
+							//taskLimitTest.end();
+						});
+					})
+					idleTimeTest.end();
+				})
+			});
+			promiseTest.end();
 		});
-
-		idleTime.test("With a non-numeric task limit", function(taskLimit) {
-			shouldFullfillPromise(false, { taskLimit: "NaN" }, "test", taskLimit);
-		});
-
-		idleTime.test("With a numeric task limit", function(taskLimit) {
-			shouldFullfillPromise(false, { taskLimit: 3 }, "test", taskLimit);
-		});
-		idleTime.end();
-	});
-
-	highLevel.test("With a non-numeric idle time", function(idleTime) {
-		idleTime.test("With no task limit", function(taskLimit) {
-			shouldFullfillPromise(false, { idleTime: "NaN" }, "test", taskLimit);
-		});
-
-		idleTime.test("With a non-numeric task limit", function(taskLimit) {
-			shouldFullfillPromise(false, { idleTime: "NaN", taskLimit: "NaN" }, "test", taskLimit);
-		});
-
-		idleTime.test("With a numeric task limit", function(taskLimit) {
-			shouldFullfillPromise(false, { idleTime: "NaN", taskLimit: 3 }, "test", taskLimit);
-		});
-		idleTime.end();
-	});
-
-	highLevel.test("With a numeric idle time", function(idleTime) {
-		idleTime.test("With no task limit", function(taskLimit) {
-			shouldFullfillPromise(false, { idleTime: 50 }, "test", taskLimit);
-		});
-
-		idleTime.test("With a non-numeric task limit", function(taskLimit) {
-			shouldFullfillPromise(false, { idleTime: 50, taskLimit: "NaN" }, "test", taskLimit);
-		});
-
-		idleTime.test("With a numeric task limit", function(taskLimit) {
-			shouldFullfillPromise(false, { idleTime: 50, taskLimit: 3 }, "test", taskLimit);
-		});
-		idleTime.end();
-	});
-	highLevel.end();
-});
-
-tap.test("With failing process (callbacks)", function(highLevel) {
-	highLevel.test("With undefined options", function(optionsTest) {
-		shouldCallback(false, undefined, "test", optionsTest);
-	});
-
-	highLevel.test("With no idle time", function(idleTime) {
-		idleTime.test("With no task limit", function(taskLimit) {
-			shouldCallback(false, { }, "test", taskLimit);
-		});
-
-		idleTime.test("With a non-numeric task limit", function(taskLimit) {
-			shouldCallback(false, { taskLimit: "NaN" }, "test", taskLimit);
-		});
-
-		idleTime.test("With a numeric task limit", function(taskLimit) {
-			shouldCallback(false, { taskLimit: 3 }, "test", taskLimit);
-		});
-		idleTime.end();
-	});
-
-	highLevel.test("With a non-numeric idle time", function(idleTime) {
-		idleTime.test("With no task limit", function(taskLimit) {
-			shouldCallback(false, { idleTime: "NaN" }, "test", taskLimit);
-		});
-
-		idleTime.test("With a non-numeric task limit", function(taskLimit) {
-			shouldCallback(false, { idleTime: "NaN", taskLimit: "NaN" }, "test", taskLimit);
-		});
-
-		idleTime.test("With a numeric task limit", function(taskLimit) {
-			shouldCallback(false, { idleTime: "NaN", taskLimit: 3 }, "test", taskLimit);
-		});
-		idleTime.end();
-	});
-
-	highLevel.test("With a numeric idle time", function(idleTime) {
-		idleTime.test("With no task limit", function(taskLimit) {
-			shouldCallback(false, { idleTime: 50 }, "test", taskLimit);
-		});
-
-		idleTime.test("With a non-numeric task limit", function(taskLimit) {
-			shouldCallback(false, { idleTime: 50, taskLimit: "NaN" }, "test", taskLimit);
-		});
-
-		idleTime.test("With a numeric task limit", function(taskLimit) {
-			shouldCallback(false, { idleTime: 50, taskLimit: 3 }, "test", taskLimit);
-		});
-		idleTime.end();
-	});
-	highLevel.end();
-});
-
-tap.test("With suceeding process (promises)", function(highLevel) {
-	highLevel.test("With undefined options", function(optionsTest) {
-		shouldFullfillPromise(true, undefined, "test", optionsTest);
-	});
-
-	highLevel.test("With no idle time", function(idleTime) {
-		idleTime.test("With no task limit", function(taskLimit) {
-			shouldFullfillPromise(true, { }, "test", taskLimit);
-		});
-
-		idleTime.test("With a non-numeric task limit", function(taskLimit) {
-			shouldFullfillPromise(true, { taskLimit: "NaN" }, "test", taskLimit);
-		});
-
-		idleTime.test("With a numeric task limit", function(taskLimit) {
-			shouldFullfillPromise(true, { taskLimit: 3 }, "test", taskLimit);
-		});
-		idleTime.end();
-	});
-
-	highLevel.test("With a non-numeric idle time", function(idleTime) {
-		idleTime.test("With no task limit", function(taskLimit) {
-			shouldFullfillPromise(true, { idleTime: "NaN" }, "test", taskLimit);
-		});
-
-		idleTime.test("With a non-numeric task limit", function(taskLimit) {
-			shouldFullfillPromise(true, { idleTime: "NaN", taskLimit: "NaN" }, "test", taskLimit);
-		});
-
-		idleTime.test("With a numeric task limit", function(taskLimit) {
-			shouldFullfillPromise(true, { idleTime: "NaN", taskLimit: 3 }, "test", taskLimit);
-		});
-		idleTime.end();
-	});
-
-	highLevel.test("With a numeric idle time", function(idleTime) {
-		idleTime.test("With no task limit", function(taskLimit) {
-			shouldFullfillPromise(true, { idleTime: 50 }, "test", taskLimit);
-		});
-
-		idleTime.test("With a non-numeric task limit", function(taskLimit) {
-			shouldFullfillPromise(true, { idleTime: 50, taskLimit: "NaN" }, "test", taskLimit);
-		});
-
-		idleTime.test("With a numeric task limit", function(taskLimit) {
-			shouldFullfillPromise(true, { idleTime: 50, taskLimit: 3 }, "test", taskLimit);
-		});
-		idleTime.end();
-	});
-	highLevel.end();
-});
-
-tap.test("With suceeding process (callbacks)", function(highLevel) {
-	highLevel.test("With undefined options", function(optionsTest) {
-		shouldCallback(true, undefined, "test", optionsTest);
-	});
-
-	highLevel.test("With no idle time", function(idleTime) {
-		idleTime.test("With no task limit", function(taskLimit) {
-			shouldCallback(true, { }, "test", taskLimit);
-		});
-
-		idleTime.test("With a non-numeric task limit", function(taskLimit) {
-			shouldCallback(true, { taskLimit: "NaN" }, "test", taskLimit);
-		});
-
-		idleTime.test("With a numeric task limit", function(taskLimit) {
-			shouldCallback(true, { taskLimit: 3 }, "test", taskLimit);
-		});
-		idleTime.end();
-	});
-
-	highLevel.test("With a non-numeric idle time", function(idleTime) {
-		idleTime.test("With no task limit", function(taskLimit) {
-			shouldCallback(true, { idleTime: "NaN" }, "test", taskLimit);
-		});
-
-		idleTime.test("With a non-numeric task limit", function(taskLimit) {
-			shouldCallback(true, { idleTime: "NaN", taskLimit: "NaN" }, "test", taskLimit);
-		});
-
-		idleTime.test("With a numeric task limit", function(taskLimit) {
-			shouldCallback(true, { idleTime: "NaN", taskLimit: 3 }, "test", taskLimit);
-		});
-		idleTime.end();
-	});
-
-	highLevel.test("With a numeric idle time", function(idleTime) {
-		idleTime.test("With no task limit", function(taskLimit) {
-			shouldCallback(true, { idleTime: 50 }, "test", taskLimit);
-		});
-
-		idleTime.test("With a non-numeric task limit", function(taskLimit) {
-			shouldCallback(true, { idleTime: 50, taskLimit: "NaN" }, "test", taskLimit);
-		});
-
-		idleTime.test("With a numeric task limit", function(taskLimit) {
-			shouldCallback(true, { idleTime: 50, taskLimit: 3 }, "test", taskLimit);
-		});
-		idleTime.end();
-	});
-	highLevel.end();
-});
+		categoryTest.end();
+	})
+})
