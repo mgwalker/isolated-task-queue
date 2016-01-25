@@ -18,7 +18,7 @@
   "scripts": {
     "prebuild": "cooger-style main.es6",
     "build": "babel main.es6 -o main.js --no-comments",
-    "test": "istanbul cover test/main.js",
+    "test": "istanbul cover test/main.js && npm run tap",
 	"tap": "tap -Rspec test/main.js"
   },
   "babel": {
