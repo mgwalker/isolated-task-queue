@@ -23,6 +23,7 @@ function shouldFullfillPromiseAndCallback(expectSuccess, options, data, test) {
 	var callbacks = 0;
 	var allSucceeded = true, allFailed = true;
 	var maxTasks = 0, taskLimit = Infinity;
+	var totalTasksCompleted = 0;
 
 	if(options && !Number.isNaN(Number(options.taskLimit))) {
 		taskLimit = Number(options.taskLimit);
@@ -33,12 +34,14 @@ function shouldFullfillPromiseAndCallback(expectSuccess, options, data, test) {
 			test.equal(true, (expectSuccess ? allResolved : allRejected), "All promises should " + (expectSuccess ? "resolve" : "reject"));
 			test.equal(true, (expectSuccess ? allSucceeded : allFailed), (expectSuccess ? "No" : "All") + " callbacks return an error");
 			test.equal(true, (maxTasks <= taskLimit), "No process exceeded its task limit (" + maxTasks + " <= " + taskLimit + ")");
+			test.equal(totalTasksCompleted, NUMBER_OF_PROCESSES, "All tasks completed");
 			test.end();
 		}
 	}
 
 	var promiseFinished = function(output) {
 		promisesDone++;
+		totalTasksCompleted++;
 		if(output.messages > maxTasks) {
 			maxTasks = output.messages;
 		}
