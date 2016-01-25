@@ -2,7 +2,7 @@ var Promise = require("promise");
 var tap = require("tap");
 var TaskQueue = require("../main.js");
 
-var NUMBER_OF_PROCESSES = 10;
+var NUMBER_OF_TASKS = 10;
 
 function kickOffProcesses(queue, data, callback) {
 	if(typeof callback != "function") {
@@ -10,7 +10,7 @@ function kickOffProcesses(queue, data, callback) {
 	}
 
 	var allPromises = [ ];
-	for(var i = 0; i < NUMBER_OF_PROCESSES; i++) {
+	for(var i = 0; i < NUMBER_OF_TASKS; i++) {
 		allPromises.push(queue.push(data, callback));
 	}
 
@@ -30,11 +30,11 @@ function shouldFullfillPromiseAndCallback(expectSuccess, options, data, test) {
 	}
 
 	var checkDone = function() {
-		if(promisesDone == promises.length && callbacks == NUMBER_OF_PROCESSES) {
+		if(promisesDone == promises.length && callbacks == NUMBER_OF_TASKS) {
 			test.equal(true, (expectSuccess ? allResolved : allRejected), "All promises should " + (expectSuccess ? "resolve" : "reject"));
 			test.equal(true, (expectSuccess ? allSucceeded : allFailed), (expectSuccess ? "No" : "All") + " callbacks return an error");
 			test.equal(true, (maxTasks <= taskLimit), "No process exceeded its task limit (" + maxTasks + " <= " + taskLimit + ")");
-			test.equal(totalTasksCompleted, NUMBER_OF_PROCESSES, "All tasks completed");
+			test.equal(totalTasksCompleted, NUMBER_OF_TASKS, "All tasks completed");
 			test.end();
 		}
 	}
