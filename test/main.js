@@ -2,7 +2,7 @@ var Promise = require("promise");
 var tap = require("tap");
 var TaskQueue = require("../main.js");
 
-var NUMBER_OF_TASKS = 10;
+var NUMBER_OF_TASKS = 300;
 
 function kickOffProcesses(queue, data, callback) {
 	if(typeof callback != "function") {
