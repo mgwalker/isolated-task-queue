@@ -34,7 +34,7 @@ function shouldFullfillPromiseAndCallback(expectSuccess, options, data, test) {
 			test.equal(true, (expectSuccess ? allResolved : allRejected), "All promises should " + (expectSuccess ? "resolve" : "reject"));
 			test.equal(true, (expectSuccess ? allSucceeded : allFailed), (expectSuccess ? "No" : "All") + " callbacks return an error");
 			test.equal(true, (maxTasks <= taskLimit), "No process exceeded its task limit (" + maxTasks + " <= " + taskLimit + ")");
-			test.equal(totalTasksCompleted, NUMBER_OF_TASKS, "All tasks completed");
+			test.equal(totalTasksCompleted, NUMBER_OF_TASKS, "All tasks (" + totalTasksCompleted + ") completed");
 			test.end();
 		}
 	}
@@ -99,7 +99,6 @@ categories.forEach(function(category) {
 							taskLimit: taskLimit.value
 						}));
 						shouldFullfillPromiseAndCallback(category.value, obj, "data", taskLimitTest);
-						//taskLimitTest.end();
 					});
 				})
 				idleTimeTest.end();
