@@ -1,6 +1,6 @@
 var Promise = require("promise");
 var tap = require("tap");
-var TaskQueue = require("../main.js");
+var TaskQueue = require("../bin/main.js");
 
 var NUMBER_OF_TASKS = 300;
 

@@ -11,13 +11,13 @@
     "url": "https://github.com/mgwalker/isolated-task-queue/issues",
     "email": "isolated-task-queue@darkcooger.net"
   },
-  "main": "main.js",
+  "main": "bin/main.js",
   "files": [
-    "main.js"
+    "bin/main.js"
   ],
   "scripts": {
-    "prebuild": "cooger-style main.es6",
-    "build": "babel main.es6 -o main.js --no-comments",
+    "prebuild": "cooger-style src/main.js",
+    "build": "babel src/main.js -o bin/main.js --no-comments",
     "test": "istanbul cover test/main.js && npm run tap",
 	"tap": "tap -Rspec test/main.js"
   },
