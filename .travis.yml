@@ -21,4 +21,5 @@ addons:
 
 after_script:
   - sleep 15
-#  - CODECLIMATE_REPO_TOKEN=3ac41b4e23ebcc5ef00f749e8d111792045f651929bb23bba75396a6717522e3 ./node_modules/.bin/codeclimate-test-reporter < coverage/lcov.info
+  - CODECLIMATE_REPO_TOKEN=f3008de22a0d00091e99f9c0c61f2806d99a8c7aa062c7ec89b844d4d23fbe92 ./node_modules/.bin/codeclimate-test-reporter < coverage/lcov.info
+  
