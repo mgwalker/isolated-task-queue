@@ -19,7 +19,7 @@
     "prebuild": "cooger-style src/main.js",
     "build": "babel src/main.js -o bin/main.js --no-comments",
     "test": "istanbul cover test/main.js && npm run tap",
-	"tap": "tap -Rspec test/main.js"
+	"tap": "tap -t600 -Rspec test/main.js"
   },
   "babel": {
     "presets": [

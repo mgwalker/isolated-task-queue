@@ -85,7 +85,7 @@ var idleTimes = [
 var taskLimits = [
 	{ name: "With no task limit ", value: undefined },
 	{ name: "With non-numeric task limit", value: "NaN" },
-	{ name: "With numeric task limit", value: 3 }
+	{ name: "With numeric task limit", value: 10 }
 ];
 
 categories.forEach(function(category) {
