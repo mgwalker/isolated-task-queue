@@ -10,7 +10,7 @@ module.exports = function Constructor(proc, options = { }) {
 		options.idleTime = 3000;
 	}
 	if (Number.isNaN(options.taskLimit)) {
-		options.taskLimit = 0;
+		options.taskLimit = Infinity;
 	}
 
 	const queue = [ ];
@@ -28,9 +28,9 @@ module.exports = function Constructor(proc, options = { }) {
 			const task = queue.shift();
 
 			callback = task.callback;
-			getTaskProcessor().then(p => p.send(task.body));
 			taskCount++;
 			running = true;
+			getTaskProcessor().then(p => p.send(task.body));
 		}
 	}
 
@@ -41,7 +41,7 @@ module.exports = function Constructor(proc, options = { }) {
 		taskProcess.on("message", function(msg) {
 			clearTimeout(processorTimeout);
 			processorTimeout = setTimeout(() => {
-				taskProcess.kill();
+				taskProcess.kill("SIGTERM");
 			}, options.idleTime);
 
 			callback((msg && !msg.error), msg); // eslint-disable-line callback-return
@@ -64,7 +64,7 @@ module.exports = function Constructor(proc, options = { }) {
 					initNewProcessor();
 					resolve(taskProcess);
 				});
-				taskProcess.kill();
+				taskProcess.kill("SIGTERM");
 			} else {
 				resolve(taskProcess);
 			}

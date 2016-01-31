@@ -11,17 +11,20 @@
     "url": "https://github.com/mgwalker/isolated-task-queue/issues",
     "email": "isolated-task-queue@darkcooger.net"
   },
-  "main": "main.js",
+  "main": "bin/main.js",
   "files": [
-    "main.js"
+    "bin/main.js"
   ],
   "scripts": {
-    "prebuild": "cooger-style main.es6",
-    "build": "babel main.es6 -o main.js --no-comments --compact",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prebuild": "cooger-style src/main.js",
+    "build": "babel src/main.js -o bin/main.js --no-comments",
+    "test": "istanbul cover test/main.js && npm run tap",
+    "tap": "tap -t600 -Rspec test/main.js"
   },
   "babel": {
-    "presets": [ "es2015" ]
+    "presets": [
+      "es2015"
+    ]
   },
   "author": "Greg Walker <isolated-task-queue@darkcooger.net>",
   "license": "MIT",
@@ -30,8 +33,12 @@
   },
   "devDependencies": {
     "babel-cli": "^6.4.5",
+    "babel-istanbul": "^0.6.0",
     "babel-preset-es2015": "^6.3.13",
-    "cooger-style": "^1.0.2"
+    "codeclimate-test-reporter": "^0.3.0",
+    "cooger-style": "^1.0.2",
+    "istanbul": "^0.4.2",
+    "tap": "^5.1.1"
   },
   "repository": {
     "type": "git",
