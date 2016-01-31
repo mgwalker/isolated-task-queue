@@ -1,5 +1,3 @@
-"use strict";
-
 const fork = require("child_process").fork;
 const Promise = require("promise");
 
