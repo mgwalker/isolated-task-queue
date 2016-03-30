@@ -1,4 +1,13 @@
-[![Build Status](https://travis-ci.org/mgwalker/isolated-task-queue.svg)](https://travis-ci.org/mgwalker/isolated-task-queue/) [![Code Climate](https://codeclimate.com/github/mgwalker/isolated-task-queue/badges/gpa.svg)](https://codeclimate.com/github/mgwalker/isolated-task-queue) [![Test Coverage](https://codeclimate.com/github/mgwalker/isolated-task-queue/badges/coverage.svg)](https://codeclimate.com/github/mgwalker/isolated-task-queue/coverage) [![Dependency Status](https://david-dm.org/mgwalker/isolated-task-queue.svg)](https://david-dm.org/mgwalker/isolated-task-queue)
+[![Build Status](https://travis-ci.org/mgwalker/isolated-task-queue.svg)](https://travis-ci.org/mgwalker/isolated-task-queue/)
+[![Code Climate](https://codeclimate.com/github/mgwalker/isolated-task-queue/badges/gpa.svg)](https://codeclimate.com/github/mgwalker/isolated-task-queue)
+[![Test Coverage](https://codeclimate.com/github/mgwalker/isolated-task-queue/badges/coverage.svg)](https://codeclimate.com/github/mgwalker/isolated-task-queue/coverage)
+[![Dependency Status](https://david-dm.org/mgwalker/isolated-task-queue.svg)](https://david-dm.org/mgwalker/isolated-task-queue)
+
+[![npm](https://img.shields.io/npm/v/isolated-task-queue.svg)](https://www.npmjs.com/package/isolated-task-queue)
+[![npm](https://img.shields.io/npm/dt/isolated-task-queue.svg)](https://www.npmjs.com/package/isolated-task-queue)
+[![GitHub issues](https://img.shields.io/github/issues/mgwalker/isolated-task-queue.svg)](https://github.com/mgwalker/isolated-task-queue/issues)
+[![GitHub license](https://img.shields.io/github/license/mgwalker/isolated-task-queue.svg)](https://opensource.org/licenses/MIT)
+
 # isolated-task-queue
 
 A simple node module to execute tasks on an isolated process by forking it.  "Isolated" here means from the rest of your process; by default, all tasks dispatched to the queue will be executed on the same forked process, so they are not isolated from each other.  However, there is an idle timeout as well as an optional maximum task limit to provide isolation between tasks if desired.
