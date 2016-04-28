@@ -8,8 +8,8 @@ notifications:
 language: node_js
 node_js:
   - "0.12"
-  - "4.2"
-  - "5.0"
+  - "4.4"
+  - "6.0"
 
 env:
   - CXX=g++-4.8
