@@ -1,8 +1,8 @@
-var messagesProcessed = 0;
+let messagesProcessed = 0;
 
-process.on("message", function(x) {
-	setTimeout(function() {
-		messagesProcessed++;
-		process.send({ messages: messagesProcessed });
-	}, 10);
+process.on('message', () => {
+  setTimeout(() => {
+    messagesProcessed += 1;
+    process.send({ messages: messagesProcessed });
+  }, 10);
 });

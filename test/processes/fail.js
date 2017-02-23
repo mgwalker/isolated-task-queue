@@ -1,8 +1,8 @@
-var messagesProcessed = 0;
+let messagesProcessed = 0;
 
-process.on("message", function(x) {
-	setTimeout(function() {
-		messagesProcessed++;
-		process.send({ error: new Error("Things have gone terribly."), messages: messagesProcessed });
-	}, 10);
+process.on('message', () => {
+  setTimeout(() => {
+    messagesProcessed += 1;
+    process.send({ error: new Error('Things have gone terribly.'), messages: messagesProcessed });
+  }, 10);
 });
