@@ -23,7 +23,17 @@ strategy:
 container: $[ variables['containerImage'] ]
 
 steps:
-- script: |
-    npm install
-    npm test
-  displayName: 'test'
+- script: npm install
+- script: npm test --silent -- --reporter xunit --coverage-report=cobertura > report.xml
+
+- task: PublishTestResults@2
+  condition: succeededOrFailed()
+  inputs:
+    testRunnerFormat: xUnit
+    testResultsFiles: 'report.xml'
+
+- task: PublishCodeCoverageResults@1
+  inputs: 
+    codeCoverageTool: Cobertura
+    summaryFileLocation: 'coverage/cobertura-coverage.xml'
+    reportDirectory: 'coverage'
