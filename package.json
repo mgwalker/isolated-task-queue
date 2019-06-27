@@ -22,11 +22,10 @@
   "author": "Greg Walker <isolated-task-queue@darkcooger.net>",
   "license": "MIT",
   "devDependencies": {
-    "codeclimate-test-reporter": "^0.4.1",
-    "eslint": "^3.16.1",
-    "eslint-config-airbnb-base": "^11.1.0",
-    "eslint-plugin-import": "^2.2.0",
-    "tap": "^10.2.1"
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-plugin-import": "^2.18.2",
+    "tap": "^14.4.3"
   },
   "repository": {
     "type": "git",

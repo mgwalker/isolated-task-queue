@@ -1,4 +1,4 @@
-const fork = require('child_process').fork;
+const { fork } = require('child_process');
 
 module.exports = function Constructor(proc, options = { idleTime: 3000, taskLimit: Infinity }) {
   const queue = [];
