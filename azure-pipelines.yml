@@ -3,37 +3,36 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
-trigger:
-- master
-
 pool:
   vmImage: 'Ubuntu-16.04'
 
 strategy:
   matrix:
-    node6:
-      containerImage: node:6
     node8:
       containerImage: node:8
     node10:
       containerImage: node:10
+    node12:
+      containerImage: node:12
     nodeLatest:
       containerImage: node:latest
 
 container: $[ variables['containerImage'] ]
 
 steps:
-- script: npm install
-- script: npm test --silent -- --reporter xunit --coverage-report=cobertura > report.xml
+  - script: npm install
+  - script: npm test --silent -- --reporter xunit --coverage-report=cobertura > report.xml
 
-- task: PublishTestResults@2
-  condition: succeededOrFailed()
-  inputs:
-    testRunnerFormat: xUnit
-    testResultsFiles: 'report.xml'
+  - task: UseDotNet@2
 
-- task: PublishCodeCoverageResults@1
-  inputs: 
-    codeCoverageTool: Cobertura
-    summaryFileLocation: 'coverage/cobertura-coverage.xml'
-    reportDirectory: 'coverage'
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    inputs:
+      testRunnerFormat: xUnit
+      testResultsFiles: 'report.xml'
+
+  - task: PublishCodeCoverageResults@1
+    inputs: 
+      codeCoverageTool: Cobertura
+      summaryFileLocation: 'coverage/cobertura-coverage.xml'
+      reportDirectory: 'coverage'
