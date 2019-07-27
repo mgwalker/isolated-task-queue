@@ -8,12 +8,12 @@ pool:
 
 strategy:
   matrix:
-    node6:
-      containerImage: node:6
     node8:
       containerImage: node:8
     node10:
       containerImage: node:10
+    node12:
+      containerImage: node:12
     nodeLatest:
       containerImage: node:latest
 
