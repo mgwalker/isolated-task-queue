@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "module": "commonjs",
+    "outDir": "./dist",
+    "removeComments": true,
+    "target": "es6"
+  },
+  "include": ["./src/**/*"]
+}
