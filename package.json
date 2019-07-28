@@ -37,7 +37,7 @@
     "url": "mgwalker/isolated-task-queue"
   },
   "engines": {
-    "node": ">=6.9.0"
+    "node": ">=8.16.0"
   },
   "dependencies": {
     "eslint-config-prettier": "^6.0.0"
