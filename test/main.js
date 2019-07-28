@@ -1,5 +1,5 @@
 const tap = require('tap'); // eslint-disable-line import/no-extraneous-dependencies
-const TaskQueue = require('../src/main.js');
+const TaskQueue = require('../dist/main.js');
 
 const NUMBER_OF_TASKS = 300;
 
@@ -35,15 +35,31 @@ function shouldFullfillPromiseAndCallback(expectSuccess, options, data, test) {
 
   const checkDone = () => {
     if (promisesDone === promises.length && callbacks === NUMBER_OF_TASKS) {
-      test.equal(true, (expectSuccess ? allResolved : allRejected), `All promises should ${expectSuccess ? 'resolve' : 'reject'}`);
-      test.equal(true, (expectSuccess ? allSucceeded : allFailed), `${expectSuccess ? 'No' : 'All'} callbacks return an error`);
-      test.equal(true, (maxTasks <= taskLimit), `No process exceeded its task limit (${maxTasks} <= ${taskLimit})`);
-      test.equal(totalTasksCompleted, NUMBER_OF_TASKS, `All tasks (${totalTasksCompleted}) completed`);
+      test.equal(
+        true,
+        expectSuccess ? allResolved : allRejected,
+        `All promises should ${expectSuccess ? 'resolve' : 'reject'}`
+      );
+      test.equal(
+        true,
+        expectSuccess ? allSucceeded : allFailed,
+        `${expectSuccess ? 'No' : 'All'} callbacks return an error`
+      );
+      test.equal(
+        true,
+        maxTasks <= taskLimit,
+        `No process exceeded its task limit (${maxTasks} <= ${taskLimit})`
+      );
+      test.equal(
+        totalTasksCompleted,
+        NUMBER_OF_TASKS,
+        `All tasks (${totalTasksCompleted}) completed`
+      );
       test.end();
     }
   };
 
-  const promiseFinished = (output) => {
+  const promiseFinished = output => {
     promisesDone += 1;
     totalTasksCompleted += 1;
     if (output.messages > maxTasks) {
@@ -62,17 +78,22 @@ function shouldFullfillPromiseAndCallback(expectSuccess, options, data, test) {
     checkDone();
   };
 
-  const queue = new TaskQueue(`./test/processes/${expectSuccess ? 'pass' : 'fail'}.js`, options);
+  const queue = new TaskQueue(
+    `./test/processes/${expectSuccess ? 'pass' : 'fail'}.js`,
+    options
+  );
   promises = kickOffProcesses(queue, data, callback);
 
-  promises.forEach((promise) => {
-    promise.then((output) => {
-      allRejected = false;
-      promiseFinished(output);
-    }).catch((output) => {
-      allResolved = false;
-      promiseFinished(output);
-    });
+  promises.forEach(promise => {
+    promise
+      .then(output => {
+        allRejected = false;
+        promiseFinished(output);
+      })
+      .catch(output => {
+        allResolved = false;
+        promiseFinished(output);
+      });
   });
 }
 
@@ -91,17 +112,24 @@ const taskLimits = [
   { name: 'With numeric task limit', value: 10 }
 ];
 
-categories.forEach((category) => {
-  tap.test(category.name, (categoryTest) => {
-    idleTimes.forEach((idleTime) => {
-      categoryTest.test(idleTime.name, (idleTimeTest) => {
-        taskLimits.forEach((taskLimit) => {
-          idleTimeTest.test(taskLimit.name, (taskLimitTest) => {
-            const obj = JSON.parse(JSON.stringify({
-              idleTime: idleTime.value,
-              taskLimit: taskLimit.value
-            }));
-            shouldFullfillPromiseAndCallback(category.value, obj, 'data', taskLimitTest);
+categories.forEach(category => {
+  tap.test(category.name, categoryTest => {
+    idleTimes.forEach(idleTime => {
+      categoryTest.test(idleTime.name, idleTimeTest => {
+        taskLimits.forEach(taskLimit => {
+          idleTimeTest.test(taskLimit.name, taskLimitTest => {
+            const obj = JSON.parse(
+              JSON.stringify({
+                idleTime: idleTime.value,
+                taskLimit: taskLimit.value
+              })
+            );
+            shouldFullfillPromiseAndCallback(
+              category.value,
+              obj,
+              'data',
+              taskLimitTest
+            );
           });
         });
         idleTimeTest.end();

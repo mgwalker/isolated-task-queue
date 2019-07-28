@@ -11,21 +11,26 @@
     "url": "https://github.com/mgwalker/isolated-task-queue/issues",
     "email": "isolated-task-queue@darkcooger.net"
   },
-  "main": "src/main.js",
+  "main": "dist/main.js",
   "files": [
-    "src/main.js"
+    "dist/main.js"
   ],
   "scripts": {
-    "lint": "eslint --fix src/*.js 'test/**/*.js'",
+    "build": "tsc",
+    "lint": "eslint src/*.ts 'test/**/*.js'",
     "test": "tap -t600 -Rspec test/main.js --coverage"
   },
   "author": "Greg Walker <isolated-task-queue@darkcooger.net>",
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "^12.6.8",
+    "@typescript-eslint/parser": "^1.13.0",
     "eslint": "^6.1.0",
     "eslint-config-airbnb-base": "^13.2.0",
     "eslint-plugin-import": "^2.18.2",
-    "tap": "^14.4.3"
+    "prettier": "^1.18.2",
+    "tap": "^14.4.3",
+    "typescript": "^3.5.3"
   },
   "repository": {
     "type": "git",
@@ -33,5 +38,8 @@
   },
   "engines": {
     "node": ">=6.9.0"
+  },
+  "dependencies": {
+    "eslint-config-prettier": "^6.0.0"
   }
 }
