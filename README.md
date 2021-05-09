@@ -1,8 +1,3 @@
-[![Build Status](https://dev.azure.com/mgwalker-codes/isolated-task-queue/_apis/build/status/mgwalker.isolated-task-queue?branchName=master)](https://dev.azure.com/mgwalker-codes/isolated-task-queue/_build/latest?definitionId=2&branchName=master)
-[![Code Climate](https://codeclimate.com/github/mgwalker/isolated-task-queue/badges/gpa.svg)](https://codeclimate.com/github/mgwalker/isolated-task-queue)
-[![Test Coverage](https://codeclimate.com/github/mgwalker/isolated-task-queue/badges/coverage.svg)](https://codeclimate.com/github/mgwalker/isolated-task-queue/coverage)
-[![Dependency Status](https://david-dm.org/mgwalker/isolated-task-queue.svg)](https://david-dm.org/mgwalker/isolated-task-queue)
-
 [![npm](https://img.shields.io/npm/v/isolated-task-queue.svg)](https://www.npmjs.com/package/isolated-task-queue)
 [![npm](https://img.shields.io/npm/dt/isolated-task-queue.svg)](https://www.npmjs.com/package/isolated-task-queue)
 [![GitHub license](https://img.shields.io/github/license/mgwalker/isolated-task-queue.svg)](https://opensource.org/licenses/MIT)
